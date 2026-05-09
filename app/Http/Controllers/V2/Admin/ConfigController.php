@@ -40,7 +40,7 @@ class ConfigController extends Controller
             'subject' => 'This is xboard test email',
             'template_name' => 'notify',
             'template_value' => [
-                'name' => admin_setting('app_name', 'XBoard'),
+                'name' => admin_setting('app_name', '泰山代理'),
                 'content' => 'This is xboard test email',
                 'url' => admin_setting('app_url')
             ]
@@ -107,8 +107,8 @@ class ConfigController extends Controller
                 'logo' => admin_setting('logo'),
                 'force_https' => (int) admin_setting('force_https', 0),
                 'stop_register' => (int) admin_setting('stop_register', 0),
-                'app_name' => admin_setting('app_name', 'XBoard'),
-                'app_description' => admin_setting('app_description', 'XBoard is best!'),
+                'app_name' => admin_setting('app_name', '泰山代理'),
+                'app_description' => admin_setting('app_description', '穩如泰山'),
                 'app_url' => admin_setting('app_url'),
                 'subscribe_url' => admin_setting('subscribe_url'),
                 'try_out_plan_id' => (int) admin_setting('try_out_plan_id', 0),
@@ -172,7 +172,7 @@ class ConfigController extends Controller
             'safe' => [
                 'email_verify' => (bool) admin_setting('email_verify', 0),
                 'safe_mode_enable' => (bool) admin_setting('safe_mode_enable', 0),
-                'secure_path' => admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key')))),
+                'secure_path' => admin_setting('frontend_admin_path', 'admin'),
                 'email_whitelist_enable' => (bool) admin_setting('email_whitelist_enable', 0),
                 'email_whitelist_suffix' => admin_setting('email_whitelist_suffix', Dict::EMAIL_WHITELIST_SUFFIX_DEFAULT),
                 'email_gmail_limit_enable' => (bool) admin_setting('email_gmail_limit_enable', 0),
@@ -224,6 +224,10 @@ class ConfigController extends Controller
         foreach ($data as $k => $v) {
             if (isset($templateKeys[$k])) {
                 SubscribeTemplate::setContent($templateKeys[$k], $v);
+                continue;
+            }
+            if ($k === 'secure_path') {
+                admin_setting(['frontend_admin_path' => $v]);
                 continue;
             }
             if ($k == 'frontend_theme') {

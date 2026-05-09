@@ -15,8 +15,8 @@ class AppController extends Controller
     {
         $config = [
             'app_info' => [
-                'app_name' => admin_setting('app_name', 'XB加速器'), // 应用名称
-                'app_description' => admin_setting('app_description', '专业的网络加速服务'), // 应用描述
+                'app_name' => admin_setting('app_name', '泰山代理'), // 应用名称
+                'app_description' => admin_setting('app_description', '穩如泰山'), // 应用描述
                 'app_url' => admin_setting('app_url', 'https://app.example.com'), // 应用官网 URL
                 'logo' => admin_setting('logo', 'https://example.com/logo.png'), // 应用 Logo URL
                 'version' => admin_setting('app_version', '1.0.0'), // 应用版本号

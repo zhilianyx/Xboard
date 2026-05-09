@@ -56,10 +56,10 @@ Route::get('/', function (Request $request) {
         }
 
         $renderParams = [
-            'title' => admin_setting('app_name', 'Xboard'),
+            'title' => admin_setting('app_name', '泰山代理'),
             'theme' => $theme,
             'version' => app(UpdateService::class)->getCurrentVersion(),
-            'description' => admin_setting('app_description', 'Xboard is best'),
+            'description' => admin_setting('app_description', '穩如泰山'),
             'logo' => admin_setting('logo'),
             'theme_config' => $themeService->getConfig($theme)
         ];
@@ -73,17 +73,30 @@ Route::get('/', function (Request $request) {
     }
 });
 
-//TODO:: 兼容
-Route::get('/' . admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key')))), function () {
+Route::get('/admin', function () {
     return view('admin', [
-        'title' => admin_setting('app_name', 'XBoard'),
+        'title' => admin_setting('app_name', '泰山代理'),
         'theme_sidebar' => admin_setting('frontend_theme_sidebar', 'light'),
         'theme_header' => admin_setting('frontend_theme_header', 'dark'),
         'theme_color' => admin_setting('frontend_theme_color', 'default'),
         'background_url' => admin_setting('frontend_background_url'),
         'version' => app(UpdateService::class)->getCurrentVersion(),
         'logo' => admin_setting('logo'),
-        'secure_path' => admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key'))))
+        'secure_path' => 'admin'
+    ]);
+});
+
+// Legacy compatibility path.
+Route::get('/' . admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key')))), function () {
+    return view('admin', [
+        'title' => admin_setting('app_name', '泰山代理'),
+        'theme_sidebar' => admin_setting('frontend_theme_sidebar', 'light'),
+        'theme_header' => admin_setting('frontend_theme_header', 'dark'),
+        'theme_color' => admin_setting('frontend_theme_color', 'default'),
+        'background_url' => admin_setting('frontend_background_url'),
+        'version' => app(UpdateService::class)->getCurrentVersion(),
+        'logo' => admin_setting('logo'),
+        'secure_path' => 'admin'
     ]);
 });
 

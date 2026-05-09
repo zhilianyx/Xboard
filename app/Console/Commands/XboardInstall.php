@@ -64,7 +64,7 @@ class XboardInstall extends Command
                 (File::exists(base_path() . '/.env') && $this->getEnvValue('INSTALLED'))
                 || (getenv('INSTALLED', false) && $isDocker)
             ) {
-                $securePath = admin_setting('secure_path', admin_setting('frontend_admin_path', hash('crc32b', config('app.key'))));
+                $securePath = admin_setting('frontend_admin_path', 'admin');
                 $this->info("访问 http(s)://你的站点/{$securePath} 进入管理面板，你可以在用户中心修改你的密码。");
                 $this->warn("如需重新安装请清空目录下 .env 文件的内容（Docker安装方式不可以删除此文件）");
                 $this->warn("快捷清空.env命令：");
@@ -182,7 +182,7 @@ class XboardInstall extends Command
             $this->info("管理员邮箱：{$email}");
             $this->info("管理员密码：{$password}");
 
-            $defaultSecurePath = hash('crc32b', config('app.key'));
+            $defaultSecurePath = 'admin';
             $this->info("访问 http(s)://你的站点/{$defaultSecurePath} 进入管理面板，你可以在用户中心修改你的密码。");
             $envConfig['INSTALLED'] = true;
             $this->saveToEnv($envConfig);
