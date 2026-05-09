@@ -15,7 +15,11 @@ RUN CFLAGS="-O0" install-php-extensions pcntl && \
 
 WORKDIR /www
 
-COPY .docker /
+# Copy dependency manifests first so vendor layer can be reused when only app code changes.
+COPY composer.json composer.lock /www/
+
+RUN --mount=type=cache,target=/tmp/composer-cache \
+    COMPOSER_CACHE_DIR=/tmp/composer-cache composer install --no-dev --no-security-blocking --prefer-dist --no-interaction --no-scripts
 
 # Use local workspace source so Docker layer cache can be reused between builds.
 COPY . /www
@@ -25,7 +29,8 @@ COPY .docker/caddy/Caddyfile /etc/caddy/Caddyfile
 COPY .docker/php/zz-xboard.ini /usr/local/etc/php/conf.d/zz-xboard.ini
 
 RUN --mount=type=cache,target=/tmp/composer-cache \
-    COMPOSER_CACHE_DIR=/tmp/composer-cache composer install --no-dev --no-security-blocking --prefer-dist --optimize-autoloader \
+    COMPOSER_CACHE_DIR=/tmp/composer-cache composer dump-autoload --no-dev --optimize --no-interaction \
+    && php artisan package:discover --ansi \
     && php artisan storage:link \
     && chown -R www:www /www \
     && chmod -R 775 /www \

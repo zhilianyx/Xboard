@@ -1,4 +1,6 @@
 /node_modules
+/tests
+/docs
 /config/v2board.php
 /public/hot
 /public/storage
@@ -11,6 +13,12 @@
 .idea
 .lock
 .git
+.github
+.gitmodules
+.gitignore
+README.md
+LICENSE
+phpstan.neon
 Homestead.json
 Homestead.yaml
 npm-debug.log
