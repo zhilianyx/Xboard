@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1.6
 FROM phpswoole/swoole:php8.2-alpine
 
+ARG TARGETARCH
+
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-# Install PHP extensions one by one with lower optimization level for ARM64 compatibility
-RUN CFLAGS="-O0" install-php-extensions pcntl && \
-    CFLAGS="-O0 -g0" install-php-extensions bcmath && \
-    install-php-extensions zip && \
-    install-php-extensions redis && \
-    apk --no-cache add shadow sqlite mysql-client mysql-dev mariadb-connector-c git patch supervisor redis caddy && \
+# Install PHP extensions. Use conservative flags only on ARM64 for compatibility.
+RUN apk --no-cache add shadow sqlite mysql-client mysql-dev mariadb-connector-c git patch supervisor redis caddy && \
+    if [ "$TARGETARCH" = "arm64" ]; then export CFLAGS="-O0 -g0"; fi && \
+    install-php-extensions pcntl bcmath zip redis && \
     addgroup -S -g 1000 www && adduser -S -G www -u 1000 www && \
     (getent group redis || addgroup -S redis) && \
     (getent passwd redis || adduser -S -G redis -H -h /data redis)
