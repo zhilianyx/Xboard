@@ -33,6 +33,7 @@ COPY .docker/caddy/Caddyfile /etc/caddy/Caddyfile
 COPY .docker/php/zz-xboard.ini /usr/local/etc/php/conf.d/zz-xboard.ini
 
 RUN --mount=type=cache,target=/tmp/composer-cache \
+    mkdir -p /www/database/seeders /www/database/factories && \
     COMPOSER_CACHE_DIR=/tmp/composer-cache composer dump-autoload --no-dev --optimize --no-interaction \
     && php artisan package:discover --ansi \
     && php artisan storage:link \
