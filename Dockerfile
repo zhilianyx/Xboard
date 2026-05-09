@@ -23,7 +23,7 @@ WORKDIR /www
 COPY composer.json composer.lock /www/
 
 RUN --mount=type=cache,target=/tmp/composer-cache \
-    COMPOSER_CACHE_DIR=/tmp/composer-cache composer install --no-dev --no-security-blocking --prefer-dist --no-interaction --no-scripts
+    COMPOSER_CACHE_DIR=/tmp/composer-cache composer install --no-dev --no-security-blocking --prefer-dist --no-interaction --no-scripts --no-autoloader
 
 # Use local workspace source so Docker layer cache can be reused between builds.
 COPY . /www
