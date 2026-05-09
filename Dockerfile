@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.6
 FROM phpswoole/swoole:php8.2-alpine
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
@@ -16,23 +17,15 @@ WORKDIR /www
 
 COPY .docker /
 
-# Add build arguments
-ARG CACHEBUST=1
-ARG REPO_URL=https://github.com/cedar2025/Xboard
-ARG BRANCH_NAME=master
-
-RUN echo "Attempting to clone branch: ${BRANCH_NAME} from ${REPO_URL} with CACHEBUST: ${CACHEBUST}" && \
-    rm -rf ./* && \
-    rm -rf .git && \
-    git config --global --add safe.directory /www && \
-    git clone --depth 1 --branch ${BRANCH_NAME} ${REPO_URL} . && \
-    git submodule update --init --recursive --force
+# Use local workspace source so Docker layer cache can be reused between builds.
+COPY . /www
 
 COPY .docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY .docker/caddy/Caddyfile /etc/caddy/Caddyfile
 COPY .docker/php/zz-xboard.ini /usr/local/etc/php/conf.d/zz-xboard.ini
 
-RUN composer install --no-cache --no-dev --no-security-blocking \
+RUN --mount=type=cache,target=/tmp/composer-cache \
+    COMPOSER_CACHE_DIR=/tmp/composer-cache composer install --no-dev --no-security-blocking --prefer-dist --optimize-autoloader \
     && php artisan storage:link \
     && chown -R www:www /www \
     && chmod -R 775 /www \
